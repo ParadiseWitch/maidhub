@@ -29,8 +29,17 @@ export default class HandleDom {
     let ret: string[] = [];
     $(seletor).each(function (item) {
       const src = $(this).attr(attr);
-      console.log(src);
       ret.push(src);
+    })
+    return ret;
+  }
+  public getDomText(seletor: string): string[] {
+    const $ = this.$;
+    let ret: string[] = [];
+    $(seletor).each(function (item) {
+      const text = $(this).text();
+      console.log(text);
+      ret.push(text);
     })
     return ret;
   }
