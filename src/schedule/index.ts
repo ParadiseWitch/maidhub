@@ -10,7 +10,6 @@ export default class Schedule<T> {
   };
 
   public static scheduleJob<T>(cron: string, task: Task<T>):Promise<T> {
-    let ret: Promise<T>;
     return new Promise((res, rej) => {
       nodeSchedule.scheduleJob(cron, () => {
         task.execute().then(res).catch(rej)

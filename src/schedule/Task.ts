@@ -44,6 +44,7 @@ export default class Task<T> {
         this.status = Status.FAILURE;
         rej(this.result);
       }
+      this.status = Status.SUCCESS;
       res(this.result)
     })
   }
