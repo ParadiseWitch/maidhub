@@ -1,4 +1,4 @@
-import HandleDom from "./handle_dom";
+import HandleDom from "./HandleDom";
 
 export {
   HandleDom

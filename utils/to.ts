@@ -13,3 +13,11 @@ export default function to(promise) {
     return [err, null];
   });
 };
+
+export const toRet = async (promise) => {
+  const [err, ret] = await to(promise);
+  if (err) {
+    console.error(err);
+  }
+  return ret;
+}
