@@ -38,11 +38,11 @@ export default class Task<T> {
         this.result = await this._exec();
       } catch (error) {
         this.status = Status.FAILURE;
-        rej(this.result);
+        rej(new Error(`任务执行失败，${this.result}`));
       }
       if (this._errCondition(this.result)) {
         this.status = Status.FAILURE;
-        rej(this.result);
+        rej(new Error(`任务执行失败，${this.result}`));
       }
       this.status = Status.SUCCESS;
       res(this.result)
