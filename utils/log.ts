@@ -23,12 +23,14 @@ export default class Log {
 
   public static writeLogFile(level: string, ...contents: string[]) {
     const logFilePath = this.logPath + this.logName;
+    // TODO判断文件是否存在，不存在就创建文件（夹）
     const now = dateFormat(new Date());
     const newLine = `[${level}]\t${now}\t | ${contents.join(", ")}\n`;
     // TODO 同步写可能会比较慢
     const data = fs.readFileSync(logFilePath);
     fs.writeFileSync(logFilePath, data + newLine)
   }
+  // TODO 终端打印格式化输出，颜色输出
 }
 
 

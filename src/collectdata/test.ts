@@ -1,4 +1,3 @@
-import { HandleDom } from ".";
 import { chromium } from 'playwright';
 import axios from "axios";
 import Log from "../../utils/log";
@@ -26,14 +25,23 @@ const download = async (src, name) => {
     await page.screenshot({ path: `./example.png` });
 
     const chapters = await page.$$('#default全部 ul:first-child a');
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < 2; index++) {
       const title = await chapters[index].getAttribute("title");
       const src = "https://www.copymanga.com" + await chapters[index].getAttribute("href");
-      // Log.log(title, src)
       const subPage = await browser.newPage();
-      // 等待 5s 加载
-      // await subPage.keyboard.press("PageDown")
-      await subPage.waitForSelector('img')
+      await subPage.goto(src)
+      const imgsNum = parseInt(await (await subPage.$(".comicCount")).textContent())
+      Log.log(`----------------------${title}----------------------`);
+      Log.log(`${src}`);
+
+      // await subPage.waitForSelector('.comicIndex :text("2")')
+      let curIndex = 1;
+      while (curIndex >= imgsNum) {
+        curIndex = parseInt(await (await subPage.$(".comicIndex")).textContent());
+      }
+      
+      console.log("yes!");
+      
       const imgs = await subPage.$$('img');
       console.log(imgs.length);
       
