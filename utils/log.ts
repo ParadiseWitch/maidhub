@@ -24,7 +24,8 @@ export default class Log {
   public static writeLogFile(level: string, ...contents: string[]) {
     const logFilePath = this.logPath + this.logName;
     const now = dateFormat(new Date());
-    const newLine = `[${level}]\t${now}\t${contents.join(", ")}\n`;
+    const newLine = `[${level}]\t${now}\t | ${contents.join(", ")}\n`;
+    // TODO 同步写可能会比较慢
     const data = fs.readFileSync(logFilePath);
     fs.writeFileSync(logFilePath, data + newLine)
   }

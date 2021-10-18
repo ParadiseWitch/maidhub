@@ -1,43 +1,52 @@
 import { HandleDom } from ".";
 import { chromium } from 'playwright';
+import axios from "axios";
+import Log from "../../utils/log";
+const fs = require("fs");
+
+const download = async (src, name) => {
+  const res = await axios({
+    method: 'get',
+    url: src,
+    responseType: 'stream'
+  });
+  res.data.pipe(fs.createWriteStream(name));
+}
 
 (async () => {
   try {
-    const browser = await chromium.launch();
-    // const browser = await chromium.launch({ headless: false}); // or firefox, webkit
-    // const browser = await chromium.launch({ headless: false, slowMo: 100 }); // or firefox, webkit
-  
+    const browser = await chromium.launch({ headless: false, slowMo: 100});
+
     const page = await browser.newPage()
     await page.goto('https://www.copymanga.com/comic/hydxjxrwgb', {
       waitUntil: "load",
       timeout: 0
-     });
+    });
     await page.setViewportSize({ width: 1920, height: 1080 })
     await page.screenshot({ path: `./example.png` });
-  
-    // #default全部 ul a[title]
-    // #default全部 ul:first-child a
+
     const chapters = await page.$$('#default全部 ul:first-child a');
-    for (const index in chapters) {
+    for (let index = 0; index < 10; index++) {
       const title = await chapters[index].getAttribute("title");
       const src = "https://www.copymanga.com" + await chapters[index].getAttribute("href");
-      console.log(src)
-
+      // Log.log(title, src)
       const subPage = await browser.newPage();
-      // 等待 2s 加载
-      await subPage.waitForTimeout(2000)
-      const imgs = await page.$$('img');
+      // 等待 5s 加载
+      // await subPage.keyboard.press("PageDown")
+      await subPage.waitForSelector('img')
+      const imgs = await subPage.$$('img');
       console.log(imgs.length);
       
-      for (const imgIndex in imgs) {
-        const imgSrc = await imgs[imgIndex].getAttribute("src")
-        console.log(imgSrc);
+      for (let imgIndex = 0; imgIndex < imgs.length; imgIndex++) {
+        const imgSrc = await imgs[imgIndex].getAttribute("src");
+        // TODO        
+        Log.log(`${title} 第${imgIndex}张, ${imgSrc}`)
       }
-      // await subPage.screenshot({ path: `./caputer/${title}.png` });
+      await subPage.screenshot({ path: `./caputer/${title}.png` });
       await subPage.close();
     }
     await browser.close()
-  } catch (error) { 
+  } catch (error) {
     console.error(error);
   }
 
@@ -46,6 +55,7 @@ import { chromium } from 'playwright';
   //   const rets = hd.getDomAttr(".tab-content ul a", "title");
   //   console.console.log(rets);
   // })
-})()
+})();
+
 
 

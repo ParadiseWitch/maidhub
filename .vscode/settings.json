@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "collect data",
     "nest",
-    "schedule"
+    "schedule",
+    "util"
   ]
 }
