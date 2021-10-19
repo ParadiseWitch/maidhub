@@ -1,4 +1,3 @@
-const fs = require('fs')
 import { writeFileSync } from 'fs'
 import { dateFormat } from './DateUtil'
 
