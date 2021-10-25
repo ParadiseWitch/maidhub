@@ -39,7 +39,12 @@ interface Chapter {
           title: el.textContent
         }
       })
-    )).map(item => host + item);
+    )).map(item => {
+      return {
+        url: host + item.url,
+        title: item.title
+      }
+    });
 
     comic_title = await page.$eval('.row > .col-9 > ul > li > h6', el => el.textContent);
 
@@ -111,20 +116,18 @@ async function goToComicPageAndGetImgs(page: Page, url: string): Promise<string[
 
 // TODO 封装成参数为：章节url数组,comic_title，browser
 // chapter_title 去章节拿
-const goToChaptersAndDownload = async (chapters: string[], comic_title: string, browser: Browser) => {
+const goToChaptersAndDownload = async (chapters: Chapter[], comic_title: string, browser: Browser) => {
   for (let index = 0; index < chapters.length; index++) {
     let imgsSrc: string[];
-    let chapter_title: string;
+    let chapter_title: string =  chapters[index].title;
+    const chapter_link = chapters[index].url;
     let subPage: Page;
     try {
-      const chapter_link = chapters[index];
-      // TODO:
       subPage = await browser.newPage()
       // await navigationPromise
 
-      chapter_title = await subPage.$eval('body > h4.header',el => el.textContent);
       Log.log(`开始下载《${chapter_title}》的图片, 链接：${chapter_link} `);
-      
+
       const chapterIsExist = await FileUtil.isExist(`./caputer/${comic_title}/${chapter_title}`);
       if (chapterIsExist) {
         const files = await toRet(FileUtil.getFiles(`./caputer/${comic_title}/${chapter_title}`));
